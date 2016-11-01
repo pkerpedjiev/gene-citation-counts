@@ -1,0 +1,12 @@
+grep ^9606 ~/data/genbank-data/gene2refseq | grep "Reference GRCh38" | grep "NC_" > ~/data/genbank-data/human/human_gene2refseq
+cat ~/data/genbank-data/gene_info | grep ^9606  > ~/data/genbank-data/human/human_gene_info
+grep ^9606 ~/data/genbank-data/gene2pubmed > ~/data/genbank-data/human/human_gene2pubmed
+cat ~/data/genbank-data/pmid_year.ssv | awk '{ split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/recent_pmid_year.ssv
+
+# run gene_populartiy.ipynb
+
+cat by_year.tsv | sort -nk 3 > sorted_by_year.tsv
+cat sorted_by_year.tsv | awk -F"\t" '{if ($11 > 10) print;}' > trimmed_sorted_by_year.tsv
+
+cat sorted_gene_info_by_year.tsv | awk -F'\t' '{ if ($6 != "protein-coding") print;}' > sorted_non_protein_gene_info_by_year.tsv
+cat gene_info_by_year.tsv | sort -nk3 > sorted_gene_info_by_year.tsv
