@@ -5,3 +5,4 @@ data/
 *.swp
 *.un~
 .ipynb_checkpoints
+out.err
