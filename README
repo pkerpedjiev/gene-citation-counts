@@ -3,7 +3,7 @@ cat ~/data/genbank-data/gene_info | grep ^9606  > ~/data/genbank-data/human/huma
 grep ^9606 ~/data/genbank-data/gene2pubmed > ~/data/genbank-data/human/human_gene2pubmed
 cat ~/data/genbank-data/pmid_year.ssv | awk '{ split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/recent_pmid_year.ssv
 
-# run gene_populartiy.ipynb
+# run gene_popularity.ipynb
 
 cat by_year.tsv | sort -nk 3 > sorted_by_year.tsv
 cat sorted_by_year.tsv | awk -F"\t" '{if ($11 > 10) print;}' > trimmed_sorted_by_year.tsv
