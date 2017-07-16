@@ -10,3 +10,11 @@ cat sorted_by_year.tsv | awk -F"\t" '{if ($11 > 10) print;}' > trimmed_sorted_by
 
 cat sorted_gene_info_by_year.tsv | awk -F'\t' '{ if ($6 != "protein-coding") print;}' > sorted_non_protein_gene_info_by_year.tsv
 cat gene_info_by_year.tsv | sort -nk3 > sorted_gene_info_by_year.tsv
+
+
+######################################################################################################################
+# Join GeneID and RefSeq ID
+
+sort -t$'\t' -nk2 ~/data/genbank-data/human/human_gene2refseq > ~/data/genbank-data/human/sorted_human_gene2refseq
+sort -t$'\t' -nk2 ~/data/genbank-data/human/human_gene_info > ~/data/genbank-data/human/sorted_human_gene_info
+
