@@ -60,15 +60,15 @@ base_dir=op.expanduser("~/data/genbank-data/hg19")
 
 import time
 
-human_gene2pubmed = (sc.textFile(op.join(base_dir, "human/human_gene2pubmed"))
+gene2pubmed = (sc.textFile(op.join(base_dir, "gene2pubmed"))
                         .filter(lambda x: x[0] != '#')
                         .map(lambda x: x.split('\t'))
                         .map(lambda x: ((int(x[0]), int(x[1])), int(x[2])))
                      )
-print(human_gene2pubmed.take(1))
+print(gene2pubmed.take(1))
 
 t1 = time.time()
-pubmeds_set = set([x[1] for x in human_gene2pubmed.collect()])
+pubmeds_set = set([x[1] for x in gene2pubmed.collect()])
 t2 = time.time()
 print("time taken", t2 - t1)
 
@@ -117,15 +117,15 @@ print("refgene length:", len(refgene_dict))
 print(list(refgene_dict.keys())[:10])
 
 base_dir = op.join(data_dir, 'genbank-data/hg19')
-taxid_gene_info_human = (sc.textFile(op.join(base_dir, 'human/human_gene_info'))
+taxid_gene_info = (sc.textFile(op.join(base_dir, 'gene_info'))
                    .filter(lambda x: x[0] != '#')
                    .map(lambda x: x.split('\t'))
                    .filter(lambda x: x[0] == "9606")
                    .map(lambda x: ((int(x[0]), int(x[1])),(x[2], x[8], x[9])))
                    )
-taxid_gene_info_human.take(1)
+taxid_gene_info.take(1)
 
-taxid_gene_refseq_id = (sc.textFile(op.join(base_dir, "human/human_gene2refseq"))
+taxid_gene_refseq_id = (sc.textFile(op.join(base_dir, "gene2refseq"))
                         .filter(lambda x: x[0] != '#')
                         .map(lambda x: x.split('\t'))
                         .filter(lambda x: x[3].split('.')[0] in refgene_dict)
@@ -135,23 +135,23 @@ taxid_gene_refseq_id.take(1)
 
 import time
 t1 = time.time()
-taxid_gene_info_refseq = taxid_gene_info_human.join(taxid_gene_refseq_id)
+taxid_gene_info_refseq = taxid_gene_info.join(taxid_gene_refseq_id)
 
 t2 = time.time()
 print("time taken", t2 - t1)
 
 len(pubmeds_set)
-human_year_pmid = (sc.textFile(op.join(base_dir, 'recent_pmid_year.ssv'))
+year_pmid = (sc.textFile(op.join(base_dir, 'recent_pmid_year.ssv'))
                   .map(lambda x: x.split())
                   .map(lambda x: (int(x[0]), int(x[1])))
                   .filter(lambda x: x[1] in pubmeds_set))
-human_year_pmid_collected = human_year_pmid.collect()
+year_pmid_collected = year_pmid.collect()
 
-pmid_year = dict([(x[1], x[0]) for x in human_year_pmid_collected])
+pmid_year = dict([(x[1], x[0]) for x in year_pmid_collected])
 
 print([k for k in list(pmid_year.values())[:10]])
 
-taxid_gene_info_pubmed = (taxid_gene_info_human.join(human_gene2pubmed)
+taxid_gene_info_pubmed = (taxid_gene_info.join(gene2pubmed)
                     .filter(lambda x: x[1][1] in pmid_year)
                                  .map(lambda x: ((x[0][0], x[0][1], x[1][1]), x[1])))
 taxid_gene_info_pubmed.take(1)        
