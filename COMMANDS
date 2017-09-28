@@ -12,11 +12,15 @@ wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.g
 wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
     zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
 
+gunzip  ~/data/genbank-data/gene2pubmed.gz
+gunzip  ~/data/genbank-data/gene2refseq.gz
+gunzip  ~/data/genbank-data/gene_info.gz
+
+
         # list gene info for tp53 by year
         awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
 
         python scripts/summarize_gene_citations.py
-
 
 
 Example fetch paper:
@@ -24,6 +28,8 @@ Example fetch paper:
 https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=25726191
 
 python scripts/pmids_by_date.py --startdate 1990/01/01 --enddate 2017/07/09
+
+sort -t$'\t' -nk 6 gene_info_total.tsv > sorted_gene_info_total.tsv
 
 cat data/pmid_year.ssv | awk '{split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/hg19/recent_pmid_year.ssv
 
