@@ -4,7 +4,7 @@ import datetime as dt
 import os.path as op
 import re
 import sys
-import urllib
+import urllib.request as ur
 from optparse import OptionParser
 
 def main():
@@ -37,9 +37,9 @@ def main():
         output_file = op.join(options.output_dir,
                               "{}.ssv".format(dt.datetime.strftime(curr_date, '%Y_%m_%d')))
         link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&mindate={0}&maxdate={0}&retmax=100000".format(curr_date_str)
-        fin = urllib.urlopen(link)
+        fin = ur.urlopen(link)
 
-        text = fin.read()
+        text = fin.read().decode('utf-8')
         all_pmids = re.finditer(r"<Id>(?P<pmid>[0-9]+)</Id>", text)
         out_str = ""
         for pmid_match in all_pmids:
@@ -49,7 +49,7 @@ def main():
             with open(output_file, 'w') as fout:
                 fout.write(out_str)
 
-                print output_file
+                print(output_file)
 
 if __name__ == '__main__':
     main()
