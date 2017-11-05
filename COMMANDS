@@ -1,30 +1,28 @@
 ## Get the gene2pubmed database
 
-wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
-    zcat ~/data/genbank-data/gene2pubmed.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
+            python scripts/pmids_by_date.py --startdate 1990/01/01 --enddate 2017/11/05
+        cat data/pmid_year.ssv | awk '{split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/hg19/recent_pmid_year.ssv
 
-wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
-wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz
+                wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
+            mkdir ~/data/genbank-data/hg19/
+        zcat ~/data/genbank-data/gene2pubmed.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
 
-wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
-    zcat ~/data/genbank-data/gene_info.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
+        wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
+        wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz
 
-wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
-    zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
+                wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
+            mkdir ~/data/genbank-data/hg19/
+        zcat ~/data/genbank-data/gene_info.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
 
-        # list gene info for tp53 by year
-        awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
+                wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
+            mkdir ~/data/genbank-data/hg19/
+        zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
 
-        python scripts/summarize_gene_citations.py
-
-
+    python scripts/summarize_gene_citations.py
+awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
 
 Example fetch paper:
 
 https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=25726191
-
-python scripts/pmids_by_date.py --startdate 1990/01/01 --enddate 2017/07/09
-
-cat data/pmid_year.ssv | awk '{split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/hg19/recent_pmid_year.ssv
 
 rm ~/data/genbank-data/hg19/recent_pmid_year.ssv; for file in $(find data/pmid_by_date -name "*.ssv"); do cat $file | awk '{split($1,a,"-"); print a[1], $1}' >> ~/data/genbank-data/hg19/recent_pmid_year.ssv; done;
