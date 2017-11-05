@@ -19,7 +19,7 @@
         zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
 
     python scripts/summarize_gene_citations.py
-awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
+awk '{if ($4 == "TP53") print}' sorted_gene_info_by_year.tsv | sort -nk 7
 
 Example fetch paper:
 

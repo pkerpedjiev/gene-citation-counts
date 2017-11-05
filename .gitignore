@@ -5,4 +5,5 @@ data/
 *.png
 *.swp
 *.un~
+*.bak
 .ipynb_checkpoints
