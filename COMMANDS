@@ -6,7 +6,10 @@ rm ~/data/genbank-data/hg19/recent_pmid_year.ssv; for file in $(find data/pmid_b
 wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz; \
 gunzip ~/data/genbank-data/gene2pubmed.gz; \
 mkdir ~/data/genbank-data/hg19/; \
+
 zcat ~/data/genbank-data/gene2pubmed.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
+    cat ~/data/genbank-data/gene2pubmed  | python scripts/genes_by_species.py  - | sort -nk 2 > results/genes_by_species.tsv; \
+    cp results/genes_by_species.tsv ~/Dropbox/tmp/graphic-idea-3.tsv
 
 wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
 
@@ -22,12 +25,8 @@ mkdir ~/data/genbank-data/hg19/; \
 zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
 
     python scripts/summarize_gene_citations.py; \
+    python scripts/summarize_gene_citations_all_species.py; \
     cp gene_info_by_year.tsv ~/Dropbox/tmp/graphic-idea-2.tsv; \
-    python scripts/summarize_gene_citations_all_species.py 
+    cp ~/data/genbank-data/hg19/geneAnnotationsExonUnions.bed ~/Dropbox/tmp/graphic-idea-1.tsv \
 
         awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
-
-Example fetch paper:
-
-https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=25726191
-
