@@ -30,3 +30,10 @@ zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/
     cp ~/data/genbank-data/hg19/geneAnnotationsExonUnions.bed ~/Dropbox/tmp/graphic-idea-1.tsv \
 
         awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
+
+# calculate how many of the papers referencing human genes reference the top 100 genes
+# get the top 100 genes
+sort -nk 5  ~/data/genbank-data/hg19/geneAnnotationsExonUnions.bed | tail -n 1000 | awk '{print $8}' > ~/data/genbank-data/hg19/top100_genes
+
+#532451
+python scripts/pubs_for_genes.py ~/data/genbank-data/gene2pubmed ~/data/genbank-data/hg19/top100_genes
