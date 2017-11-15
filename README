@@ -1,20 +1,39 @@
-grep ^9606 ~/data/genbank-data/gene2refseq | grep "Reference GRCh38" | grep "NC_" > ~/data/genbank-data/human/human_gene2refseq
-cat ~/data/genbank-data/gene_info | grep ^9606  > ~/data/genbank-data/human/human_gene_info
-grep ^9606 ~/data/genbank-data/gene2pubmed > ~/data/genbank-data/human/human_gene2pubmed
-cat ~/data/genbank-data/pmid_year.ssv | awk '{ split($1,a,"-"); print a[1], $2}' > ~/data/genbank-data/recent_pmid_year.ssv
+## Get the gene2pubmed database
 
-# run gene_popularity.ipynb
+python scripts/pmids_by_date.py --startdate 1990/01/01 --enddate 2017/11/05; \
+rm ~/data/genbank-data/hg19/recent_pmid_year.ssv; for file in $(find data/pmid_by_date -name "*.ssv"); do cat $file | awk '{split($1,a,"-"); print a[1], $2}' >> ~/data/genbank-data/hg19/recent_pmid_year.ssv; done;
 
-cat by_year.tsv | sort -nk 3 > sorted_by_year.tsv
-cat sorted_by_year.tsv | awk -F"\t" '{if ($11 > 10) print;}' > trimmed_sorted_by_year.tsv
+wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz; \
+gunzip ~/data/genbank-data/gene2pubmed.gz; \
+mkdir ~/data/genbank-data/hg19/; \
 
-cat sorted_gene_info_by_year.tsv | awk -F'\t' '{ if ($6 != "protein-coding") print;}' > sorted_non_protein_gene_info_by_year.tsv
-cat gene_info_by_year.tsv | sort -nk3 > sorted_gene_info_by_year.tsv
+zcat ~/data/genbank-data/gene2pubmed.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
+    cat ~/data/genbank-data/gene2pubmed  | python scripts/genes_by_species.py  - | sort -nk 2 > results/genes_by_species.tsv; \
+    cp results/genes_by_species.tsv ~/Dropbox/tmp/graphic-idea-3.tsv
 
+wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
 
-######################################################################################################################
-# Join GeneID and RefSeq ID
+wget -N -P ~/data/ucsc-data/hg19/ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz
 
-sort -t$'\t' -nk2 ~/data/genbank-data/human/human_gene2refseq > ~/data/genbank-data/human/sorted_human_gene2refseq
-sort -t$'\t' -nk2 ~/data/genbank-data/human/human_gene_info > ~/data/genbank-data/human/sorted_human_gene_info
+wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz; \
+gunzip ~/data/genbank-data/gene_info.gz; \
+mkdir ~/data/genbank-data/hg19/; \
+zcat ~/data/genbank-data/gene_info.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
 
+wget -N -P ~/data/genbank-data/ ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz; \
+mkdir ~/data/genbank-data/hg19/; \
+zcat gene2refseq.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2refseq
+
+    python scripts/summarize_gene_citations.py; \
+    python scripts/summarize_gene_citations_all_species.py; \
+    cp gene_info_by_year.tsv ~/Dropbox/tmp/graphic-idea-2.tsv; \
+    cp ~/data/genbank-data/hg19/geneAnnotationsExonUnions.bed ~/Dropbox/tmp/graphic-idea-1.tsv \
+
+        awk '{if ($4 == "TP53") print}' gene_info_by_year.tsv | sort -nk 7
+
+# calculate how many of the papers referencing human genes reference the top 100 genes
+# get the top 100 genes
+sort -nk 5  ~/data/genbank-data/hg19/geneAnnotationsExonUnions.bed | tail -n 100 | awk '{print $8}' > ~/data/genbank-data/hg19/top100_genes
+
+#532451
+python scripts/pubs_for_genes.py ~/data/genbank-data/gene2pubmed ~/data/genbank-data/hg19/top100_genes

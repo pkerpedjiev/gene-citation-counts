@@ -28,7 +28,7 @@ def main():
         for line in f:
             gene_list.add(line.strip())
 
-    #print("gene_list:", gene_list)
+    print("gene_list:", len(gene_list))
 
     all_human_papers = set()
     top100_gene_human_papers = set()
