@@ -91,7 +91,7 @@ be done using command line scripts but I started with python so I'll stick with 
 
 
 To get a ranking of human transcripts by citation count,
-I used the pipeline we created for [higlass's](higlass.io) gene anntations:
+I used the pipeline we created for [higlass's](http://higlass.io) gene anntations:
 https://hms-dbmi.github.io/higlass-docs/gene_annotations.html#creating-the-track
 This is a good file to cross-reference with the the ones above to check that the
 values are correct.
