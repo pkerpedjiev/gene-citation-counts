@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/72544773.svg)](https://zenodo.org/badge/latestdoi/72544773)
+
 # Calculating Gene Citation Counts using NCBI's databases
 
 To get an idea of how citation counts have changed over the years, we need
