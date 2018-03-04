@@ -174,6 +174,19 @@ gene_counts = sorted(taxid_gene_info_pubmed.map(lambda x: ((x[0][0], x[0][1]), (
 
 print("gene_counts[:3]", gene_counts[:3])
 
+taxid_gene_info = (taxid_gene_info_pubmed.map(lambda x: ((x[0][0], x[0][1], pmid_year[x[1][1]]), x[1]))
+                        .map(lambda x: ((x[0][0], x[0][1]), (x[1][0], 1)))
+                        .reduceByKey(lambda x1, x2: (x1[0], x1[1] + x2[1])))
+
+string_values = (taxid_gene_info.map(lambda x: "\t".join(map(str, 
+                 [x[0][0], x[0][1], '-', x[1][0][0], x[1][0][1], x[1][0][2], x[1][1]
+                 ])))
+                 .collect())
+
+with open('gene_info_total.tsv', 'w') as f:
+    for sv in string_values:
+        f.write(sv + "\n")
+
 taxid_gene_info_year = (taxid_gene_info_pubmed.map(lambda x: ((x[0][0], x[0][1], pmid_year[x[1][1]]), x[1]))
                         .map(lambda x: ((x[0][0], x[0][1], pmid_year[x[1][1]]), (x[1][0], 1)))
                                  .reduceByKey(lambda x1, x2: (x1[0], x1[1] + x2[1])))
@@ -182,6 +195,17 @@ print(taxid_gene_info_year.count())
 print(taxid_gene_info_year.filter(lambda x: x[1][0][2] == 'rRNA').take(1))
 
 
+string_values = (taxid_gene_info_year.map(lambda x: "\t".join(map(str, 
+                 [x[0][0], x[0][1], x[0][2], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1]
+                 ])))
+                 .collect())
+with open('gene_info_by_year.tsv', 'w') as f:
+    for sv in string_values:
+        f.write(sv + "\n")
+        
+
+
+'''
 genes_per_year = dict(taxid_gene_info_pubmed.map(lambda x: ((pmid_year[x[1][1]], x[0][1]), 1))
  .reduceByKey(lambda x1,x2: x1+x2)
  .map(lambda x: (x[0][0], 1))
@@ -212,12 +236,4 @@ gene_types_counts = (taxid_gene_info_pubmed.map(lambda x: ((x[1][0][2], x[0][1])
 
 for gtc in gene_types_counts:
     print(gtc[0], gtc[1])
-string_values = (taxid_gene_info_year.map(lambda x: "\t".join(map(str, 
-                 [x[0][0], x[0][1], x[0][2], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1]
-                 ])))
-                 .collect())
-with open('gene_info_by_year.tsv', 'w') as f:
-    for sv in string_values:
-        f.write(sv + "\n")
-        
-
+'''
