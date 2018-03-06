@@ -64,7 +64,7 @@ mkdir ~/data/genbank-data/hg19/;
 Filter for human data for faster downstream processing.
 
 ```
-zcat ~/data/genbank-data/gene_info.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
+cat ~/data/genbank-data/gene_info | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
 ```
 
 Get gene to refseq information so that we can use it to get transcript level information. NCBI's gene
