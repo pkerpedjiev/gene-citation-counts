@@ -36,7 +36,7 @@ mkdir ~/data/genbank-data/hg19/;
 And then filter out the human genes:
 
 ```
-zcat ~/data/genbank-data/gene2pubmed.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
+cat ~/data/genbank-data/gene2pubmed | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene2pubmed
     cat ~/data/genbank-data/gene2pubmed  | python scripts/genes_by_species.py  - | sort -nk 2 > results/genes_by_species.tsv; \
     cp results/genes_by_species.tsv ~/Dropbox/tmp/graphic-idea-3.tsv
 ```
@@ -64,7 +64,7 @@ mkdir ~/data/genbank-data/hg19/;
 Filter for human data for faster downstream processing.
 
 ```
-zcat ~/data/genbank-data/gene_info.gz | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
+cat ~/data/genbank-data/gene_info | awk '{if ($1 == 9606) print;}' > ~/data/genbank-data/hg19/gene_info
 ```
 
 Get gene to refseq information so that we can use it to get transcript level information. NCBI's gene
