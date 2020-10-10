@@ -2,6 +2,8 @@
 
 # Calculating Gene Citation Counts using NCBI's databases
 
+**This is no longer maintained, try at your own risk. See [this comment](https://github.com/pkerpedjiev/gene-citation-counts/issues/6#issuecomment-692344645) for a link to similar data at the NCBI**
+
 To get an idea of how citation counts have changed over the years, we need
 a list of which citations were published when. This script queries Entrez
 gene for citation lists for each day.
